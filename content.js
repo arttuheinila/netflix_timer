@@ -17,8 +17,8 @@ browser.runtime.onMessage.addListener((request) => {
   if (request.action === "pause") {
     pauseVideo();
   } else if (request.action === "close") {
-    console.log('Closing tab');
-    browser.runtime.sendMessage({ action: 'closeTab' });
+    console.log('Closing window');
+    window.close();
   } else if (request.action === "waitNextEpisode") {
     console.log('Waiting for next episode to pause');
 

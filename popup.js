@@ -9,13 +9,12 @@ document.getElementById('start').addEventListener('click', () => {
     browser.runtime.sendMessage({ action: 'startTimer', time, nextAction, tabId: tabs[0].id })
       .then(response => {
         console.log('Message sent:', response);
-        window.close(); // Close the popup after setting the timer
+        window.close(); // Close the popup after sending the message
       })
       .catch(error => console.error('Error sending message:', error));
   }).catch(error => console.error('Error querying tabs:', error));
 });
 
-// Start the timer with Enter
 document.getElementById('time').addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
     document.getElementById('start').click();
