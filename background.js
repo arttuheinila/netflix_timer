@@ -1,14 +1,18 @@
 let timerId = null;
 
+console.log('Background script loaded');
+
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('Background received message:', request);
 
   if (request.action === "startTimer") {
+    console.log('Starting timer for', request.time, 'milliseconds');
     if (timerId) {
       clearTimeout(timerId);
+      console.log('Existing timer cleared');
     }
     timerId = setTimeout(() => {
-      console.log('Timer finished, sending action', request.nextAction);
+      console.log('Timer finished, executing action', request.nextAction);
       if (request.nextAction === "close") {
         browser.tabs.remove(request.tabId)
           .then(() => console.log('Tab closed successfully'))
