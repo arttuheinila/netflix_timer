@@ -1,18 +1,36 @@
-document.getElementById('start').addEventListener('click', () => {
-  const time = parseInt(document.getElementById('time').value) * 60000; // Convert minutes to milliseconds
-  const nextAction = document.getElementById('action').value;
+document.addEventListener('DOMContentLoaded', () => {
+  const actionSelect = document.getElementById('action');
+  const timeInput = document.getElementById('time');
+  const startButton = document.getElementById('start');
 
-  console.log('Button clicked. Timer set for', time, 'milliseconds with action', nextAction);
+  actionSelect.addEventListener('change', () => {
+    if (actionSelect.value === 'pause' || actionSelect.value === 'close') {
+      timeInput.classList.remove('hidden');
+    } else {
+      timeInput.classList.add('hidden');
+    }
+  });
 
-  browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-    console.log('Active tab found', tabs[0].id);
-    browser.runtime.sendMessage({ action: 'startTimer', time, nextAction, tabId: tabs[0].id })
-      .then(response => {
-        console.log('Message sent:', response);
-        window.close(); // Close the popup after sending the message
-      })
-      .catch(error => console.error('Error sending message:', error));
-  }).catch(error => console.error('Error querying tabs:', error));
+  startButton.addEventListener('click', () => {
+    const action = actionSelect.value;
+    const time = parseInt(timeInput.value, 10) || 0;
+    let message = { action: 'startTimer', nextAction: action };
+
+    if (action === 'pause' || action === 'close') {
+      message.time = time * 60000;
+    } else {
+      message.time = 0;
+    }
+
+    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      browser.runtime.sendMessage({ ...message, tabId: tabs[0].id });
+    });
+
+    window.close();
+  });
+
+  // Trigger the initial change event to set the correct state on load
+  actionSelect.dispatchEvent(new Event('change'));
 });
 
 document.getElementById('time').addEventListener('keyup', (event) => {

@@ -2,14 +2,32 @@
 <html>
 <head>
   <title>Netflix Sleep Timer</title>
+  <style>
+    .hidden {
+      display: none;
+    }
+    .form-row {
+      display: flex;
+      align-items: center;
+    }
+    .form-row > * {
+      margin-right: 10px;
+    }
+    #timeInput.hidden {
+      display: none;
+    }
+    #timeInput:not(.hidden) {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <input type="number" id="time" placeholder="Minutes" min="1">
   <select id="action">
+    <option value="waitNextEpisode">Wait Next Episode and Close</option>
     <option value="pause">Pause</option>
     <option value="close">Close</option>
-    <option value="waitNextEpisode">Wait Next Episode and Pause</option>
   </select>
+  <input type="number" id="time" placeholder="Minutes" min="1">
   <button id="start">Start Timer</button>
   <script src="popup.js"></script>
 </body>
