@@ -29,6 +29,24 @@ browser.runtime.onMessage.addListener((request) => {
     }
   };
 
+  function showNotification(message) {
+    if (Notification.permission === 'granted') {
+      new Notification('Netflix Sleep Timer', {
+        body: message,
+        icon: 'icons/icon48.png'
+      });
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          new Notification('Netflix Sleep Timer', {
+            body: message,
+            icon: 'icons/icon48.png'
+          });
+        }
+      });
+    }
+  }
+
   if (request.action === "pause") {
     pauseVideo();
   } else if (request.action === "close") {
@@ -60,5 +78,7 @@ browser.runtime.onMessage.addListener((request) => {
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
+  } else if (request.notification) {
+    showNotification(request.notification);
   }
 });
