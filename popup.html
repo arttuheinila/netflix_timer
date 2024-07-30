@@ -3,26 +3,10 @@
 <head>
   <title>Netflix Sleep Timer</title>
   <link rel="stylesheet" href="popup.css">
-  <!-- <style>
-    .hidden {
-      display: none;
-    }
-    .form-row {
-      display: flex;
-      align-items: center;
-    }
-    .form-row > * {
-      margin-right: 10px;
-    }
-    #timeInput.hidden {
-      display: none;
-    }
-    #timeInput:not(.hidden) {
-      display: block;
-    }
-  </style> -->
 </head>
 <body>
+  <div id="notification-bar"></div>
+  <label for="action">Choose an action: </label>
   <select id="action">
     <option value="waitNextEpisode">Wait Next Episode and Close</option>
     <option value="pause">Pause</option>

@@ -35,7 +35,7 @@ browser.runtime.onMessage.addListener((request) => {
     console.log('Closing window');
     window.close();
   } else if (request.action === "waitNextEpisode") {
-    console.log('Waiting for next episode to pause');
+    console.log('Waiting for next episode to close');
 
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
