@@ -3,47 +3,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const timeInput = document.getElementById('time');
   const startButton = document.getElementById('start');
 
+  // Function to notify the content script
   function notifyContentScript(message) {
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      browser.tabs.sendMessage(tabs[0].id, { notification: message });
-    });
-  } 
-  // const notificationBar = document.getElementById('notification-bar')
+    browser.tabs.query({ active: true, currentWindow: true })
+      .then(tabs => {
+        if (tabs.length > 0) {
+          browser.tabs.sendMessage(tabs[0].id, { notification: message });
+        }
+      })
+      .catch(error => console.error('Error querying tabs:', error));
+  }
 
-  // function showNotification(message) {
-  //   notificationBar.textContent = message;
-  //   notificationBar.style.display = 'block';
-  //   setTimeout(() => {
-  //     notificationBar.style.display = 'none';
-  //   }, 3000); //Hide notification after 3 seconds
-  // }
-
-
+  // Event listener to show or hide the time input field
   actionSelect.addEventListener('change', () => {
-    if (actionSelect.value === 'pause' || actionSelect.value === 'close') {
+    if (['pause', 'close'].includes(actionSelect.value)) {
       timeInput.classList.remove('hidden');
     } else {
       timeInput.classList.add('hidden');
     }
   });
 
+  // Event listener for the start button
   startButton.addEventListener('click', () => {
     const action = actionSelect.value;
     const time = parseInt(timeInput.value, 10) || 0;
-    let message = { action: 'startTimer', nextAction: action };
+    const timeInMs = action === 'pause' || action === 'close' ? time * 60000 : 0;
+    const notificationMessage = action === 'pause' || action === 'close'
+      ? `Timer set for ${time} minutes to ${action}.`
+      : `Timer set to ${action} at the end of the current episode.`;
 
-    if (action === 'pause' || action === 'close') {
-      message.time = time * 60000;
-      notifyContentScript(`Timer set for ${time} minutes to ${action === 'pause' ? 'pause' : 'close'}.`)
-    } else {
-      message.time = 0;
-      notifyContentScript(`Timer set to ${action === 'pauseNext' ? 'pause' : 'close'} at the end of current episode.`)
-    }
+    // Notify the content script
+    notifyContentScript(notificationMessage);
 
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      browser.runtime.sendMessage({ ...message, tabId: tabs[0].id });
-    });
+    // Send message to background script
+    browser.tabs.query({ active: true, currentWindow: true })
+      .then(tabs => {
+        if (tabs.length > 0) {
+          return browser.runtime.sendMessage({
+            action: 'startTimer',
+            nextAction: action,
+            time: timeInMs,
+            tabId: tabs[0].id
+          });
+        }
+      })
+      .catch(error => console.error('Error sending message:', error));
 
+    // Close the popup window
     window.close();
   });
 
@@ -51,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   actionSelect.dispatchEvent(new Event('change'));
 });
 
+// Handle Enter key press in time input field
 document.getElementById('time').addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
     document.getElementById('start').click();

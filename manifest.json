@@ -1,8 +1,14 @@
 {
   "manifest_version": 2,
   "name": "Netflix Sleep Timer",
-  "version": "1.0",
-  "description": "Pause or close Netflix after a set time.",
+  "version": "1.1",
+  "description": "Netflix Sleep Timer allows you to automatically pause or close Netflix after a set time or when a new episode starts. Perfect for controlling your binge-watching habits or settings limits for kids without you having to monitor time or episode changes.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "permissions": [
     "tabs",
     "activeTab",
@@ -13,12 +19,14 @@
     "scripts": ["background.js"],
     "persistent": false
   },
+
   "browser_action": {
     "default_popup": "popup.html",
+    "default_title": "Netflix Sleep Timer",
     "default_icon": {
       "16": "icons/icon-16.png",
-      "48": "icons/icon-48.png",
-      "128": "icons/icon-128.png"
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
     }
   },
   "content_scripts": [
@@ -26,5 +34,6 @@
       "matches": ["*://*.netflix.com/*"],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "web_accessible_resources": ["icons/icon-128.png"]
 }
