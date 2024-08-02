@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(tabs => {
         if (tabs.length > 0) {
           browser.tabs.sendMessage(tabs[0].id, { notification: message });
+          console.log('Notification sent to content script:', message);
         }
       })
       .catch(error => console.error('Error querying tabs:', error));
@@ -39,6 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
     browser.tabs.query({ active: true, currentWindow: true })
       .then(tabs => {
         if (tabs.length > 0) {
+          console.log('Sending message to background script:', {
+            action: 'startTimer',
+            nextAction: action,
+            time: timeInMs,
+            tabId: tabs[0].id
+          });
           return browser.runtime.sendMessage({
             action: 'startTimer',
             nextAction: action,

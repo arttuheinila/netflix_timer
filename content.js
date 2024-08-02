@@ -35,6 +35,7 @@ browser.runtime.onMessage.addListener((request) => {
         body: message,
         icon: 'icons/icon48.png'
       });
+      console.log('Notification shown:', message);
     } else if (Notification.permission !== 'denied') {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
@@ -42,6 +43,7 @@ browser.runtime.onMessage.addListener((request) => {
             body: message,
             icon: 'icons/icon48.png'
           });
+          console.log('Notification shown after permission:', message);
         }
       });
     }
